@@ -1,0 +1,24 @@
+作业要求：
+将鸢尾花数据集安装8 : 2的比例划分成训练集与验证集，用tensorflow实现knn
+作业思路：
+1.对数据做预处理
+    独热编码
+    分离数据集
+2.knn
+    knn是在数据集中选取k个近邻点，根据它们的类别决策自己的类别
+    k的取值是knn的唯一参数，其大小直接影响分类的结果
+    k的选取：
+            经手动测试k的取值，实验结果表明，k=5时预测结果正确率为1.0
+            
+    算法设计思路：
+        knn是懒惰学习，（无需学习），对于划分后的测试集，算此点与附近的训练集的距离，按距离排成从小到大的数组，取前k个类别中出现次数最多的类别定为它的类别
+        knn算法部分实现：
+        #定义距离（曼哈顿距离）
+        distance = tf.reduce_sum(tf.abs(tf.subtract(x_data_train, tf.expand_dims(x_data_test, 1))), axis=2)
+        #knn
+        _,top_k_indices = tf.nn.top_k(tf.negative(distance), k=k)
+        top_k_label = tf.gather(y_data_train, top_k_indices)
+
+        sum_up_predictions = tf.reduce_sum(top_k_label, axis=1)
+        prediction = tf.argmax(sum_up_predictions, axis=1)
+        
